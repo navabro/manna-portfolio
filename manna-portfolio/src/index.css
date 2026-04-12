@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #fff0f5;
+  --pink-soft: #ffb6c1;
+  --pink-accent: #ff69b4;
+  --pink-deep: #d4607a;
+  --text-primary: #4a2c2a;
+  --text-muted: #8a5a60;
+  --glass-bg: rgba(255, 255, 255, 0.42);
+  --glass-border: rgba(255, 182, 193, 0.38);
+  --shadow-card: 0 4px 20px rgba(180, 80, 100, 0.09);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(255, 182, 193, 0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 85%, rgba(255, 209, 220, 0.2) 0%, transparent 55%);
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--text-primary);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff0f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffb6c1;
+  border-radius: 99px;
+}
+
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--pink-deep) 0%, var(--pink-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
