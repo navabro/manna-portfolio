@@ -89,16 +89,7 @@ export default function Hero() {
           Law Student · Ammayi · Malayali manga🌴
         </motion.p>
 
-        {/* CTAs */}
-        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mt-10 sm:mt-12">
 
-          <a
-            href="#contact"
-            className="mt-4 sm:mt-6 px-9 py-4 rounded-full border border-[var(--pink)] text-[var(--text-primary)] hover:bg-[var(--pink)]/20 transition-all duration-300 w-full sm:w-auto text-center"
-          >
-            Say Hello
-          </a>
-        </motion.div>
       </motion.div>
 
       {/* Scroll indicator */}
