@@ -1,15 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400;1,9..40,500&family=Noto+Serif+Malayalam:wght@400;600&display=swap');
 @import "tailwindcss";
 
 :root {
-  --bg: #fff0f5;
+  --bg-deep: #1a0a14;
+  --bg-glass: rgba(255, 230, 240, 0.06);
+  --border-glass: rgba(255, 182, 210, 0.18);
   --pink-soft: #ffb6c1;
-  --pink-accent: #ff69b4;
-  --pink-deep: #d4607a;
-  --text-primary: #4a2c2a;
-  --text-muted: #8a5a60;
-  --glass-bg: rgba(255, 255, 255, 0.42);
-  --glass-border: rgba(255, 182, 193, 0.38);
-  --shadow-card: 0 4px 20px rgba(180, 80, 100, 0.09);
+  --pink-mid: #ff85a1;
+  --pink-accent: #ff4d8d;
+  --text-primary: #fff0f5;
+  --text-muted: rgba(255, 200, 220, 0.65);
+  --gold-shimmer: #f5d0a9;
 }
 
 * {
@@ -22,40 +23,89 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  font-family: 'Nunito', sans-serif;
-  background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(255, 182, 193, 0.22) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 85%, rgba(255, 209, 220, 0.2) 0%, transparent 55%);
-  min-height: 100vh;
+html, body {
   overflow-x: hidden;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--bg-deep);
   color: var(--text-primary);
+  min-height: 100vh;
 }
 
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.font-malayalam {
+  font-family: 'Noto Serif Malayalam', serif;
+}
+
+.section-wrapper {
+  width: 100%;
+  padding-left: max(1.5rem, 5vw);
+  padding-right: max(1.5rem, 5vw);
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  box-sizing: border-box;
+}
+
+.content-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  background: #fff0f5;
+  background: var(--bg-deep);
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #ffb6c1;
+  background: var(--bg-glass);
   border-radius: 99px;
+  border: 1px solid var(--border-glass);
 }
 
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pink-soft);
+}
+
+/* Glass Utilities */
 .glass {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, var(--pink-deep) 0%, var(--pink-accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Progress bar thumb style (for music player) */
+input[type=range] {
+  -webkit-appearance: none;
+  background: rgba(255,255,255,0.1);
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--pink-mid);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Soft Divider Utility */
+.soft-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-glass), transparent);
 }
