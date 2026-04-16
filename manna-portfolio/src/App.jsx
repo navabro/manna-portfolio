@@ -7,6 +7,7 @@ import CatImage from './components/CatImage'
 import Skills from './components/Skills'
 import Contact from './components/Contact'
 import MusicPlayer from './components/MusicPlayer'
+import ForeheadXO from './components/ForeheadXO'
 
 export default function App() {
   return (
@@ -25,6 +26,8 @@ export default function App() {
         <div className="section-wrapper">
           <CatImage />
         </div>
+        
+        <ForeheadXO />
         
         <Skills />
         <Contact />

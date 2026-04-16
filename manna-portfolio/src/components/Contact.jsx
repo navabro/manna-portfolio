@@ -8,7 +8,7 @@ export default function Contact() {
 
   const contacts = [
     { icon: '📧', label: 'Email', value: 'hello@manna.domain' },
-    { icon: '📱', label: 'Instagram', value: '@manna.exe' },
+    { icon: '📱', label: 'Instagram', value: '@ninteammayiamma_' },
     { icon: '📍', label: 'Location', value: 'Kerala, India' },
     { icon: '🌐', label: 'LinkedIn', value: 'linkedin.com/in/manna' }
   ]
