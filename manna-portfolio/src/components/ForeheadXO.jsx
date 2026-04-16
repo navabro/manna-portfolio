@@ -299,12 +299,9 @@ const ForeheadXO = ({ imageSrc = '/manna.jpeg', onStickerUnlock }) => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleDownload}
-                  className="mt-10 sm:mt-12 px-7 py-3 rounded-full bg-[var(--pink-mid)] text-white font-semibold text-base shadow-lg hover:bg-[var(--pink-accent)] transition-all duration-300 flex items-center justify-center gap-2"
+                  className="mt-10 sm:mt-12 px-12 py-5 rounded-full bg-[var(--pink-mid)] text-white font-semibold text-base shadow-lg hover:bg-[var(--pink-accent)] transition-all duration-300 flex items-center justify-center gap-2"
                 >
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.766-5.764-5.766zm3.392 8.221c-.142.399-.715.762-1.205.814-.421.044-.966.185-2.827-.543-2.313-.905-3.805-3.245-3.921-3.4-.116-.156-.948-1.259-.948-2.401 0-1.141.6-1.701.814-1.933.214-.232.464-.291.62-.291.155 0 .311.001.446.006.141.006.333-.053.52.404.188.457.643 1.564.7 1.68.058.116.096.251.019.404-.078.153-.117.247-.232.38l-.35.404c-.114.133-.24.278-.103.513.138.235.611.999 1.309 1.62.898.799 1.657 1.046 1.892 1.163.235.117.373.097.513-.065.14-.162.597-.695.756-.93.159-.236.319-.199.54-.116l1.714.808c.221.107.368.161.42.249.053.088.053.513-.089.912z" />
-                  </svg>
-                  Add to WhatsApp
+                  Download
                 </motion.button>
 
                 <p className="mt-4 text-[0.7rem] text-[var(--text-muted)] tracking-wide font-sans">
