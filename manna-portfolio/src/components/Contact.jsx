@@ -37,7 +37,7 @@ export default function Contact() {
               fontFamily: '"DM Sans", sans-serif'
             }}
           >
-            004 / REACH OUT
+            005 / REACH OUT
           </span>
         </div>
 

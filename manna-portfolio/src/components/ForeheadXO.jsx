@@ -7,10 +7,19 @@ const WINNING_COMBINATIONS = [
   [0, 4, 8], [2, 4, 6]             // Diagonals
 ];
 
-const ForeheadXO = ({ imageSrc = '/manna.jpeg' }) => {
+const STICKER_SEQUENCE = [
+  '/manna-sticker.jpeg',
+  '/manna-sticker 2.jpeg',
+  '/manna-sticker 3.jpeg',
+];
+
+const ForeheadXO = ({ imageSrc = '/manna.jpeg', onStickerUnlock }) => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [winnerInfo, setWinnerInfo] = useState(null);
+  const [showWinMessage, setShowWinMessage] = useState(false);
+  const [currentStickerIndex, setCurrentStickerIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
 
   const calculateWinner = useCallback((squares) => {
     for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
@@ -29,6 +38,7 @@ const ForeheadXO = ({ imageSrc = '/manna.jpeg' }) => {
     setBoard(Array(9).fill(null));
     setIsXNext(true);
     setWinnerInfo(null);
+    setShowWinMessage(false);
   }, []);
 
   // Bot Logic
@@ -74,12 +84,38 @@ const ForeheadXO = ({ imageSrc = '/manna.jpeg' }) => {
     }
   }, [isXNext, board, winnerInfo, getBotMove, calculateWinner]);
 
+  // Win reward: unlock sticker + show message
+  useEffect(() => {
+    if (winnerInfo?.winner === 'X') {
+      setShowWinMessage(true);
+
+      // Update sticker index (no looping, cap at max)
+      setCurrentStickerIndex(prev => Math.min(prev + 1, STICKER_SEQUENCE.length));
+      setIsVisible(true);
+
+      if (typeof onStickerUnlock === 'function') {
+        onStickerUnlock();
+      }
+    }
+  }, [winnerInfo, onStickerUnlock]);
+
+  // Sticker visibility timer (1 minute)
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+      }, 60000); // 1 minute
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible]);
+
   // Auto-reset after game end
   useEffect(() => {
     if (winnerInfo) {
+      const resetDelay = winnerInfo.winner === 'X' ? 2000 : 2500;
       const timer = setTimeout(() => {
         resetGame();
-      }, 2500);
+      }, resetDelay);
       return () => clearTimeout(timer);
     }
   }, [winnerInfo, resetGame]);
@@ -94,6 +130,17 @@ const ForeheadXO = ({ imageSrc = '/manna.jpeg' }) => {
 
     const win = calculateWinner(newBoard);
     if (win) setWinnerInfo(win);
+  };
+
+  const handleDownload = () => {
+    if (currentStickerIndex === 0) return;
+    const path = STICKER_SEQUENCE[currentStickerIndex - 1];
+    const link = document.createElement('a');
+    link.href = path;
+    link.download = `manna-sticker-${currentStickerIndex}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const sectionVariants = {
@@ -184,7 +231,7 @@ const ForeheadXO = ({ imageSrc = '/manna.jpeg' }) => {
           </div>
 
           {/* Game Result Message */}
-          <div className="mt-8 h-10 flex flex-col items-center justify-center">
+          <div className="mt-8 min-h-[2.5rem] flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
               {winnerInfo ? (
                 <motion.div
@@ -192,10 +239,20 @@ const ForeheadXO = ({ imageSrc = '/manna.jpeg' }) => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="text-white font-medium tracking-wide flex items-center gap-2"
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                  className="text-white font-medium tracking-wide flex flex-col items-center gap-1"
                 >
                   {winnerInfo.winner === 'X' && (
-                    <span className="flex items-center gap-2"><span className="text-[var(--pink-soft)]">FOR WHAT JOY</span></span>
+                    <>
+                      <motion.span
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, ease: 'easeOut' }}
+                        className="text-[var(--pink-soft)] text-sm font-semibold tracking-wide"
+                      >
+                        🎉 You unlocked a sticker 🎉
+                      </motion.span>
+                    </>
                   )}
                   {winnerInfo.winner === 'O' && (
                     <span className="text-[var(--text-muted)]">PODA PATTI</span>
@@ -216,6 +273,46 @@ const ForeheadXO = ({ imageSrc = '/manna.jpeg' }) => {
               )}
             </AnimatePresence>
           </div>
+
+          {/* Reward Notification */}
+          <AnimatePresence>
+            {isVisible && currentStickerIndex > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, transition: { duration: 0.6 } }}
+                className="mt-12 w-full pt-8 border-t border-[var(--border-glass)] flex flex-col items-center"
+              >
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="w-32 h-32 rounded-2xl glass border border-[var(--border-glass)] p-2 mb-4"
+                >
+                  <img
+                    src={STICKER_SEQUENCE[currentStickerIndex - 1]}
+                    alt={`Sticker ${currentStickerIndex}`}
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                </motion.div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleDownload}
+                  className="mt-10 sm:mt-12 px-7 py-3 rounded-full bg-[var(--pink-mid)] text-white font-semibold text-base shadow-lg hover:bg-[var(--pink-accent)] transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.766-5.764-5.766zm3.392 8.221c-.142.399-.715.762-1.205.814-.421.044-.966.185-2.827-.543-2.313-.905-3.805-3.245-3.921-3.4-.116-.156-.948-1.259-.948-2.401 0-1.141.6-1.701.814-1.933.214-.232.464-.291.62-.291.155 0 .311.001.446.006.141.006.333-.053.52.404.188.457.643 1.564.7 1.68.058.116.096.251.019.404-.078.153-.117.247-.232.38l-.35.404c-.114.133-.24.278-.103.513.138.235.611.999 1.309 1.62.898.799 1.657 1.046 1.892 1.163.235.117.373.097.513-.065.14-.162.597-.695.756-.93.159-.236.319-.199.54-.116l1.714.808c.221.107.368.161.42.249.053.088.053.513-.089.912z" />
+                  </svg>
+                  Add to WhatsApp
+                </motion.button>
+
+                <p className="mt-4 text-[0.7rem] text-[var(--text-muted)] tracking-wide font-sans">
+                  Available for a short time ⏳
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </motion.section>

@@ -2,39 +2,70 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function MusicPlayer() {
-  const audioRef = useRef(null)
+  const audioRef = useRef(new Audio())
+  const playerRef = useRef(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(0.8)
   const [isMuted, setIsMuted] = useState(false)
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(1)
 
+  // Click outside to collapse
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isExpanded && playerRef.current && !playerRef.current.contains(event.target)) {
+        setIsExpanded(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isExpanded])
+
+  const TRACKS = [
+    { id: 1, label: 'Version 1' },
+    { id: 2, label: 'Version 2' },
+    { id: 3, label: 'Version 3' },
+    { id: 4, label: 'Version 4' },
+  ]
+
+  // Audio Setup & Listeners
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio) return
-
-    audio.volume = isMuted ? 0 : volume
-
+    
     const updateTime = () => setCurrentTime(audio.currentTime)
     const updateDuration = () => setDuration(audio.duration)
+    const handleEnded = () => setIsPlaying(false)
 
     audio.addEventListener('timeupdate', updateTime)
     audio.addEventListener('loadedmetadata', updateDuration)
+    audio.addEventListener('ended', handleEnded)
 
     return () => {
+      audio.pause()
+      audio.src = ""
       audio.removeEventListener('timeupdate', updateTime)
       audio.removeEventListener('loadedmetadata', updateDuration)
+      audio.removeEventListener('ended', handleEnded)
     }
+  }, [])
+
+  // Volume Control
+  useEffect(() => {
+    audioRef.current.volume = isMuted ? 0 : volume
   }, [volume, isMuted])
 
+  // Play/Pause Control
   useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play().catch(e => console.log('Audio error:', e))
-      } else {
-        audioRef.current.pause()
-      }
+    if (isPlaying) {
+      audioRef.current.play().catch(e => {
+        console.log('Audio playback prevented:', e)
+        setIsPlaying(false)
+      })
+    } else {
+      audioRef.current.pause()
     }
   }, [isPlaying])
 
@@ -61,8 +92,34 @@ export default function MusicPlayer() {
   const togglePlay = () => {
     setIsPlaying(!isPlaying)
     if (!isExpanded && !isPlaying) setIsExpanded(true)
-    else if (isExpanded && isPlaying) setIsExpanded(false)
   }
+
+  const switchTrack = (index) => {
+    if (index === currentTrackIndex) return
+    
+    // 1. Pause current
+    audioRef.current.pause()
+    // 2. Reset time
+    audioRef.current.currentTime = 0
+    // 3. Update track index
+    setCurrentTrackIndex(index)
+    // 4. Update source
+    audioRef.current.src = `/oorum-blood/oorum-blood-${index}.mp3`
+    // 5. Load
+    audioRef.current.load()
+
+    // 6. Resume if was playing
+    if (isPlaying) {
+      audioRef.current.play().catch(e => console.log('Switch error:', e))
+    }
+  }
+
+  // Set initial source
+  useEffect(() => {
+    if (audioRef.current && !audioRef.current.src) {
+      audioRef.current.src = `/oorum-blood/oorum-blood-1.mp3`
+    }
+  }, [])
 
   return (
     <div 
@@ -98,9 +155,10 @@ export default function MusicPlayer() {
       `}</style>
       
       {/* Outer wrapper applying media queries */}
-      <div className="music-player-container fixed bottom-[1.25rem] right-[1.25rem] z-[9999] flex flex-col items-end">
-        <audio ref={audioRef} src="/oorum-blood.mp3" onEnded={() => setIsPlaying(false)} />
-
+      <div 
+        ref={playerRef}
+        className="music-player-container fixed bottom-[1.25rem] right-[1.25rem] z-[9999] flex flex-col items-end"
+      >
         <AnimatePresence>
           {isExpanded && (
             <motion.div
@@ -183,8 +241,36 @@ export default function MusicPlayer() {
                 </button>
               </div>
 
-              {/* Row 4 - Volume */}
-              <div className="w-full flex items-center gap-2 mt-2">
+              {/* Row 4 - Track Selector */}
+              <div className="w-full flex flex-col gap-2 mt-2">
+                <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '0.65rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+                  SELECT VERSION
+                </span>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {TRACKS.map(track => (
+                    <button
+                      key={track.id}
+                      onClick={() => switchTrack(track.id)}
+                      style={{
+                        padding: '0.4rem 0.8rem',
+                        fontSize: '0.65rem',
+                        fontFamily: '"DM Sans", sans-serif',
+                        borderRadius: '999px',
+                        border: '1px solid var(--border-glass)',
+                        background: currentTrackIndex === track.id ? 'var(--pink-mid)' : 'rgba(255,255,255,0.03)',
+                        color: currentTrackIndex === track.id ? 'white' : 'var(--text-muted)',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
+                      {track.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Row 5 - Volume */}
+              <div className="w-full flex items-center gap-2 mt-2 pt-2 border-t border-white/5">
                 <span style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '0.6rem', color: 'var(--text-muted)' }}>
                   VOL
                 </span>

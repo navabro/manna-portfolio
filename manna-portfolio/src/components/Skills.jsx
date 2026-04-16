@@ -36,7 +36,7 @@ export default function Skills() {
       <div className="w-full soft-divider absolute top-0 left-0" />
 
       <div className="content-container">
-        <span 
+        <span
           style={{
             display: 'block',
             marginBottom: '1rem',
@@ -47,7 +47,7 @@ export default function Skills() {
             fontFamily: '"DM Sans", sans-serif'
           }}
         >
-          003 / SKILLS
+          004 / SKILLS
         </span>
 
         <h2 className="font-display text-[clamp(1.8rem,5vw,3rem)] text-[var(--pink-soft)] mb-12">
@@ -72,7 +72,7 @@ export default function Skills() {
                 WebkitBackdropFilter: 'blur(12px)'
               }}
             >
-              <div 
+              <div
                 style={{
                   fontSize: '1.8rem',
                   marginBottom: '0.25rem',
@@ -81,7 +81,7 @@ export default function Skills() {
               >
                 {card.icon}
               </div>
-              <h3 
+              <h3
                 style={{
                   fontFamily: '"Cormorant Garamond", serif',
                   fontSize: '1.4rem',
@@ -91,7 +91,7 @@ export default function Skills() {
               >
                 {card.title}
               </h3>
-              <div 
+              <div
                 style={{
                   display: 'flex',
                   flexWrap: 'wrap',
